@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom'
 import Selection from '../Components/Selection'
 import UberEats from '../Components/UberEats'
 import MapPage from '../Components/MapPage'
+import Footer from '../Components/Footer'
 
 function HomeLayout() {
   return (
@@ -14,6 +15,7 @@ function HomeLayout() {
         <Selection/>
         <UberEats/>
         <MapPage/>
+        <Footer/>
         <Outlet/>
     </div>
   )
