@@ -1,6 +1,6 @@
 import React from 'react'
 import Background from  '../assets/Images/odm-bg.jpg'
-import Pickup from '../assets/Images/Uber.jpg'
+import Pickup from '../assets/Images/uber.jpg'
 function UberEats() {
   return (
     <div className='flex w-full min-h-[50rem] bg-[var(--Treasureana---Geocaching-App-7)] z-20'>
