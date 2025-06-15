@@ -4,7 +4,7 @@
     --Treasureana---Geocaching-App-1: #1d594e;
     --Treasureana---Geocaching-App-2: #f2ca04;
     --Treasureana---Geocaching-App-3: #f29f04;
-    --Treasureana---Geocaching-App-4: #f28704;
+    --Treasureana---Geocaching-App-4: #fef3c6;
     --Treasureana---Geocaching-App-5: #f23030;
     --Treasureana---Geocaching-App-6: #f2f2f2;
     --Treasureana---Geocaching-App-7: #000000;
@@ -36,6 +36,10 @@
     font-family: "Funnel_Display_ExtraBold";
     src: url(./assets/Fonts/Funnel_Display/FunnelDisplay-ExtraBold.ttf) format("truetype");
 }
+@font-face {
+    font-family: "Pacifico";
+    src: url(./assets/Fonts/Pacifico/Pacifico-Regular.ttf) format("truetype");
+}
 
 @theme{
     --font-Funnel_Display: "Funnel_Display", sans-serif;
@@ -44,4 +48,5 @@
     --font-Funnel_Display_Light: "Funnel_Display_Light", sans-serif;
     --font-Funnel_Display_SemiBold: "Funnel_Display_SemiBold", sans-serif;
     --font-Funnel_Display_ExtraBold: "Funnel_Display_ExtraBold", sans-serif;
+    --font-Pacifico: "Pacifico", sans-serif;
 }
