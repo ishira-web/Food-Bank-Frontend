@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+:root{
+    --Treasureana---Geocaching-App-1: #1d594e;
+    --Treasureana---Geocaching-App-2: #f2ca04;
+    --Treasureana---Geocaching-App-3: #f29f04;
+    --Treasureana---Geocaching-App-4: #f28704;
+    --Treasureana---Geocaching-App-5: #f23030;
+    --Treasureana---Geocaching-App-6: #f2f2f2;
+    --Treasureana---Geocaching-App-7: #000000;
+    --Treasureana---Geocaching-App-8: #ffffff;
+    --Treasureana---Geocaching-App-9: #e0e0e0;
+}
+
+@font-face {
+    font-family: "Funnel_Display";
+    src: url(./assets/Fonts/Funnel_Display/FunnelDisplay-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Funnel_Display_Medium";
+    src: url(./assets/Fonts/Funnel_Display/FunnelDisplay-Medium.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Funnel_Display_Bold";
+    src: url(./assets/Fonts/Funnel_Display/FunnelDisplay-Bold.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Funnel_Display_Light";
+    src: url(./assets/Fonts/Funnel_Display/FunnelDisplay-Light.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Funnel_Display_SemiBold";
+    src: url(./assets/Fonts/Funnel_Display/FunnelDisplay-SemiBold.ttf) format("truetype");
+}
+@font-face {
+    font-family: "Funnel_Display_ExtraBold";
+    src: url(./assets/Fonts/Funnel_Display/FunnelDisplay-ExtraBold.ttf) format("truetype");
+}
+
+@theme{
+    --font-Funnel_Display: "Funnel_Display", sans-serif;
+    --font-Funnel_Display_Medium: "Funnel_Display_Medium", sans-serif;  
+    --font-Funnel_Display_Bold: "Funnel_Display_Bold", sans-serif;
+    --font-Funnel_Display_Light: "Funnel_Display_Light", sans-serif;
+    --font-Funnel_Display_SemiBold: "Funnel_Display_SemiBold", sans-serif;
+    --font-Funnel_Display_ExtraBold: "Funnel_Display_ExtraBold", sans-serif;
+}
