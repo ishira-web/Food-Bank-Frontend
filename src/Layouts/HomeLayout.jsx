@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 
 function HomeLayout() {
   return (
-    <div className='flex flex-col overflow-x-hidden pt-[5rem] bg-[var(--Treasureana---Geocaching-App-6)]'>
+    <div className='overflow-x-hidden pt-[5rem] bg-[var(--Treasureana---Geocaching-App-6)]'>
         <Navbar/>
         <Header/>
         <Outlet/>
