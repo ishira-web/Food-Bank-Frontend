@@ -14,6 +14,9 @@ function Navbar() {
               Menu
             </li>
             <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+              Our Story
+            </li>
+            <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               About Us
             </li>
             <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
