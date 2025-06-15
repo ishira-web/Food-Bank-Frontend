@@ -3,6 +3,7 @@ import Navbar from '../Components/Navbar'
 import Header from '../Components/Header'
 import { Outlet } from 'react-router-dom'
 import Selection from '../Components/Selection'
+import UberEats from '../Components/UberEats'
 
 function HomeLayout() {
   return (
@@ -10,6 +11,7 @@ function HomeLayout() {
         <Navbar/>
         <Header/>
         <Selection/>
+        <UberEats/>
         <Outlet/>
     </div>
   )
