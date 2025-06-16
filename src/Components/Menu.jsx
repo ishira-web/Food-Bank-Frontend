@@ -2,7 +2,9 @@ import React from 'react'
 
 function Menu() {
   return (
-    <div>Menu</div>
+    <div className='w-full min-h-screen p-4'>
+
+    </div>
   )
 }
 
