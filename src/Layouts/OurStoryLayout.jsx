@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 
 function OurStoryLayout() {
   return (
-    <div className='overflow-x-hidden pt-[5rem] bg-[var(--Treasureana---Geocaching-App-6)]'>
+    <div className='overflow-x-hidden pt-[5rem] bg-[var(--Treasureana---Geocaching-App-7)]'>
         <Navbar/>
         <Story/>
         <Footer/>
