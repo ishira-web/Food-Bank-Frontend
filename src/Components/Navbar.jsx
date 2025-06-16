@@ -11,9 +11,9 @@ function Navbar() {
           <img src={Logo} alt="Logo" className='h-auto' />
         </div>    
         <ul className="hidden md:flex items-center gap-8 text-[var(--Treasureana---Geocaching-App-4)] font-Funnel_Display group">
-            <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+            <Link to="/menu"><li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Menu
-            </li>
+            </li></Link>
             <Link to="/our-story"><li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Our Story
             </li></Link>
