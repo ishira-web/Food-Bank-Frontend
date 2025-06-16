@@ -2,7 +2,7 @@ import React from 'react'
 
 function Story() {
   return (
-    <div>Story</div>
+    <div className='w-full min-h-screen'>Story</div>
   )
 }
 
