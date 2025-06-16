@@ -75,7 +75,7 @@ function Footer() {
             </li>
             <li className='flex items-center gap-2'>
               <Phone size={16} />
-              <span>+94 112 345 678</span>
+              <span>+94 773 393 391</span>
             </li>
             <li className='flex items-center gap-2'>
               <Mail size={16} />
