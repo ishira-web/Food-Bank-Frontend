@@ -1,14 +1,20 @@
 import React from 'react';
 import { X, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
-
+  const navigate = useNavigate();
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  const handleProceedToPayment = () => {
+    onClose();
+    navigate('/order-pre-pay', { state: { cartItems } });
+  };
 
   return (
     <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? '' : 'pointer-events-none'}`}>
       <div 
-        className={`absolute inset-0 bg-[var(--Treasureana---Geocaching-App-11)]/50  transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 bg-[var(--Treasureana---Geocaching-App-11)]/50 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0'}`}
         onClick={onClose}
       />
       <div 
@@ -16,7 +22,7 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
       >
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-xl font-Funnel_Display_SemiBold flex items-center  text-[var(--Treasureana---Geocaching-App-1)]">
+            <h2 className="text-xl font-Funnel_Display_SemiBold flex items-center text-[var(--Treasureana---Geocaching-App-1)]">
               <ShoppingCart className="mr-2 text-[var(--Treasureana---Geocaching-App-1)]" /> Your Cart
             </h2>
             <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -24,7 +30,6 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
             </button>
           </div>
           
-          {/* Cart items */}
           <div className="flex-grow overflow-y-auto p-4">
             {cartItems.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
@@ -37,7 +42,7 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
                     <div className="flex justify-between">
                       <div className="flex-1">
                         <h3 className="text-lg font-medium">{item.name}</h3>
-                        <p className="text-gray-600 ">Rs. {item.price.toLocaleString()}</p>
+                        <p className="text-gray-600">Rs. {item.price.toLocaleString()}</p>
                       </div>
                       
                       <div className="flex items-center">
@@ -73,14 +78,16 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
             )}
           </div>
           
-          {/* Cart footer */}
           {cartItems.length > 0 && (
             <div className="border-t p-4">
               <div className="flex justify-between mb-4">
                 <span className="font-medium">Subtotal:</span>
                 <span className="font-bold">Rs. {subtotal.toLocaleString()}</span>
               </div>
-              <button className="w-full bg-[var(--Treasureana---Geocaching-App-3)] hover:bg-opacity-90 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+              <button 
+                onClick={handleProceedToPayment}
+                className="w-full bg-[var(--Treasureana---Geocaching-App-3)] hover:bg-opacity-90 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+              >
                 Proceed to Payment
               </button>
             </div>
