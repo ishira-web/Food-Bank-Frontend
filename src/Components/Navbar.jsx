@@ -1,6 +1,7 @@
 import React from 'react';
 import Logo from '../assets/Images/Logo.png';
 import { Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
@@ -13,9 +14,9 @@ function Navbar() {
             <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Menu
             </li>
-            <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+            <Link to="/our-story"><li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Our Story
-            </li>
+            </li></Link>
             <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               About Us
             </li>
