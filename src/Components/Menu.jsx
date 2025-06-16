@@ -65,17 +65,6 @@ function Menu() {
       ...prev,
       [food._id]: 0
     }));
-    
-    // Show success notification
-    toast.success(`${quantity} ${food.name} added to cart!`, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "light",
-    });
   };
 
   // Update quantity in cart
@@ -102,9 +91,6 @@ function Menu() {
 
   return (
     <div className='w-full min-h-screen p-4 font-Funnel_Display relative'>
-      <ToastContainer />
-      
-      {/* Cart Button with Notification Badge */}
       <div className="fixed top-4 right-4 z-40">
         <button 
           onClick={() => setIsCartOpen(true)}

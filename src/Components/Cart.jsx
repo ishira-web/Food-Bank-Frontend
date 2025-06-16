@@ -7,18 +7,14 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
 
   return (
     <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? '' : 'pointer-events-none'}`}>
-      {/* Background overlay */}
       <div 
-        className={`absolute inset-0 bg-black/50  transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 bg-[var(--Treasureana---Geocaching-App-11)]/50  transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0'}`}
         onClick={onClose}
       />
-      
-      {/* Cart panel */}
       <div 
         className={`absolute right-0 top-0 h-full w-full max-w-md bg-[var(--Treasureana---Geocaching-App-6)] shadow-xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex flex-col h-full">
-          {/* Cart header */}
           <div className="flex items-center justify-between p-4 border-b">
             <h2 className="text-xl font-Funnel_Display_SemiBold flex items-center  text-[var(--Treasureana---Geocaching-App-1)]">
               <ShoppingCart className="mr-2 text-[var(--Treasureana---Geocaching-App-1)]" /> Your Cart

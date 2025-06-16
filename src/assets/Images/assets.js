@@ -63,4 +63,12 @@ export const food_list = [
     description : "Served with kochchi sambol",
     category : "Tasty Titbits"
     },
+    {
+    _id : 6,
+    name : "PRAWN WADEY",
+    image : food_6,
+    price : 2500,
+    description : "Served with kochchi sambol",
+    category : "Punchy Mains"
+    },
 ]
