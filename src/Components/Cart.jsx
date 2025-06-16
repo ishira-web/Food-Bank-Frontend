@@ -2,7 +2,7 @@ import React from 'react';
 import { X, Plus, Minus, ShoppingCart } from 'lucide-react';
 
 function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
-  // Calculate subtotal
+
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   return (
@@ -15,7 +15,7 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
       
       {/* Cart panel */}
       <div 
-        className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`absolute right-0 top-0 h-full w-full max-w-md bg-[var(--Treasureana---Geocaching-App-6)] shadow-xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex flex-col h-full">
           {/* Cart header */}
