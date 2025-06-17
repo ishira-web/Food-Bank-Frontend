@@ -23,9 +23,9 @@ function Navbar() {
             <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Contact
             </li>
-            <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+            <Link to="/reservation"><li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Reservation
-            </li>
+            </li></Link>
         </ul>
         <div className="hidden md:flex ">
           <button className="bg-[var(--Treasureana---Geocaching-App-4)] w-[8rem] cursor-pointer text-[var(--Treasureana---Geocaching-App-7)] font-semibold px-8 py-2 transition">
