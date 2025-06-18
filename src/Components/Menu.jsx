@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { food_list } from '../assets/Images/assets.js';
 import { ShoppingCart } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cart from '../Components/Cart.jsx'; // Import your Cart component
+import Cart from '../Components/Cart.jsx';
 
 function Menu() {
-  // State to track quantities for each food item
+  useEffect(()=>{window.scrollTo(0, 0)},[])
   const [quantities, setQuantities] = useState({});
-  // State to track cart items with details
   const [cartItems, setCartItems] = useState([]);
-  // State to control cart visibility
   const [isCartOpen, setIsCartOpen] = useState(false);
-  
-  // Calculate total items in cart
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-  // Group foods by category
   const foodsByCategory = food_list.reduce((acc, food) => {
     if (!acc[food.category]) {
       acc[food.category] = [];
@@ -24,8 +18,6 @@ function Menu() {
     acc[food.category].push(food);
     return acc;
   }, {});
-
-  // Handle quantity changes
   const handleQuantityChange = (id, change) => {
     setQuantities(prev => ({
       ...prev,
@@ -67,7 +59,7 @@ function Menu() {
     }));
   };
 
-  // Update quantity in cart
+
   const updateCartQuantity = (id, change) => {
     const existingItem = cartItems.find(item => item._id === id);
     

@@ -28,9 +28,9 @@ function Navbar() {
             </li></Link>
         </ul>
         <div className="hidden md:flex ">
-          <button className="bg-[var(--Treasureana---Geocaching-App-4)] w-[8rem] cursor-pointer text-[var(--Treasureana---Geocaching-App-7)] font-semibold px-8 py-2 transition">
+          <Link to="/login"><button className="bg-[var(--Treasureana---Geocaching-App-4)] w-[8rem] cursor-pointer text-[var(--Treasureana---Geocaching-App-7)] font-semibold px-8 py-2 transition">
             Login
-          </button>
+          </button></Link>
         </div>
         <div className="md:hidden">
           <Menu className="text-[var(--Treasureana---Geocaching-App-4)] w-6 h-6" />

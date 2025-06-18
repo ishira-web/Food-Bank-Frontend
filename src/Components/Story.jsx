@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import OurStory from '../assets/Images/our_stroy.jpg';
 import ParralaxImage from '../assets/Images/our_stroy2.jpg';
 
 function Story() {
+  useEffect(()=>{window.scrollTo(0, 0);},[])
   return (
     <div className="w-full min-h-screen bg-[var(--Treasureana---Geocaching-App-7)]">
       {/* Hero Image with Heading */}

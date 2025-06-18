@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import BG from '../assets/Images/slide1.jpg'
 function Reservation() {
+  useEffect(()=>{window.scrollTo(0, 0);})
   return (
     <div className='w-full min-h-screen flex flex-col gap-8 px-4 md:px-10  bg-[var(--Treasureana---Geocaching-App-7)]'>
   <div className='relative'>
