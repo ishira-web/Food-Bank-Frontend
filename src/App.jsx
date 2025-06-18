@@ -7,6 +7,8 @@ import { ToastContainer } from 'react-toastify'
 import PaymentPage from './Pages/PaymentPage'
 import ReservationPage from './Pages/ReservationPage'
 import Login from './Components/Login'
+import Register from './Components/Register'
+
 
 function App() {
   useEffect(()=>{window.scrollTo(0, 0)},[])
@@ -20,6 +22,7 @@ function App() {
       <Route path='/order-pre-pay' element ={<PaymentPage/>}/>
       <Route path='/reservation' element ={<ReservationPage/>}/>
       <Route path='/login' element={<Login/>}/>
+      <Route path='/register' element={<Register/>}/>
     </Routes>
     </>
   )

@@ -59,7 +59,7 @@ function Login() {
             
             <div className='text-center text-sm text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display'>
               Don't have an account?{' '}
-              <a href='#' className='font-medium text-[var(--Treasureana---Geocaching-App-8)] hover:text-[var(--Treasureana---Geocaching-App-9)]'>
+              <a href='/register' className='font-medium text-[var(--Treasureana---Geocaching-App-8)] hover:text-[var(--Treasureana---Geocaching-App-9)]'>
                 Sign up
               </a>
             </div>
