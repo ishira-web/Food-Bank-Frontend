@@ -41,8 +41,7 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
                   <li key={item._id} className="py-4">
                     <div className="flex justify-between">
                       <div className="flex-1">
-                        <h3 className="text-lg font-medium">{item.name}</h3>
-                        <p className="text-gray-600">Rs. {item.price.toLocaleString()}</p>
+                        <h3 className="text-sm font-medium">{item.foodName}</h3>
                       </div>
                       
                       <div className="flex items-center">

@@ -19,15 +19,13 @@ function Login() {
     const result = await login(email, password);
 
     if (result.success) {
-      // Get logged-in user from localStorage (or use context user if you prefer)
+
       const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
       if (loggedInUser?.role === "admin") {
-        navigate("/admin");
+        navigate("/admin/dashboard");
       } else if (loggedInUser?.role === "user") {
         navigate("/");
-      } else {
-        navigate("/"); // default fallback
       }
     } else {
       setError(result.message || "Failed to login");
