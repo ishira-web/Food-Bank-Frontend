@@ -8,6 +8,8 @@ import PaymentPage from './Pages/PaymentPage'
 import ReservationPage from './Pages/ReservationPage'
 import Login from './Components/Login'
 import Register from './Components/Register'
+import AdminRoutes from './Admin/Admin_Routes/AdminRoutes'
+import { AuthContext } from './Auth/authContext'
 
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
       <Route path='/reservation' element ={<ReservationPage/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/register' element={<Register/>}/>
+      <Route path='/admin/*' element={<AdminRoutes/>}/>
     </Routes>
     </>
   )

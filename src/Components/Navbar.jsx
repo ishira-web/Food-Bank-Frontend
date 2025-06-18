@@ -1,36 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Logo from '../assets/Images/Logo.png';
 import { Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 function Navbar() {
+  // For demo, useState; replace with actual auth context or prop
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // You might get isLoggedIn from your auth context or props in real app
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--Treasureana---Geocaching-App-7)] shadow-md">
       <div className="max-w-7xl mx-auto px-3 h-[5rem] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img src={Logo} alt="Logo" className='h-auto' />
-        </div>    
+          <img src={Logo} alt="Logo" className="h-auto" />
+        </div>
         <ul className="hidden md:flex items-center gap-8 text-[var(--Treasureana---Geocaching-App-4)] font-Funnel_Display group">
-            <Link to="/menu"><li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+          <Link to="/menu">
+            <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Menu
-            </li></Link>
-            <Link to="/our-story"><li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+            </li>
+          </Link>
+          <Link to="/our-story">
+            <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Our Story
-            </li></Link>
-            <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
-              About Us
             </li>
+          </Link>
+          <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+            About Us
+          </li>
+          <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
+            Contact
+          </li>
+          <Link to="/reservation">
             <li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
-              Contact
-            </li>
-            <Link to="/reservation"><li className="cursor-pointer transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold hover:scale-105">
               Reservation
-            </li></Link>
+            </li>
+          </Link>
         </ul>
-        <div className="hidden md:flex ">
-          <Link to="/login"><button className="bg-[var(--Treasureana---Geocaching-App-4)] w-[8rem] cursor-pointer text-[var(--Treasureana---Geocaching-App-7)] font-semibold px-8 py-2 transition">
-            Login
-          </button></Link>
+        <div className="hidden md:flex">
+          {isLoggedIn ? (
+            <Link to="/account">
+              <button className="bg-[var(--Treasureana---Geocaching-App-4)] w-[8rem] cursor-pointer text-[var(--Treasureana---Geocaching-App-7)] font-semibold px-8 py-2 transition">
+                Account
+              </button>
+            </Link>
+          ) : (
+            <Link to="/login">
+              <button className="bg-[var(--Treasureana---Geocaching-App-4)] w-[8rem] cursor-pointer text-[var(--Treasureana---Geocaching-App-7)] font-semibold px-8 py-2 transition">
+                Login
+              </button>
+            </Link>
+          )}
         </div>
         <div className="md:hidden">
           <Menu className="text-[var(--Treasureana---Geocaching-App-4)] w-6 h-6" />
