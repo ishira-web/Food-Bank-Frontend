@@ -16,7 +16,7 @@ function App() {
   useEffect(()=>{window.scrollTo(0, 0)},[])
   return (
     <>
-    <ToastContainer/>
+    <ToastContainer position="top-right" autoClose={3000}/>
     <Routes>
       <Route path='/' element={<HomePage/>}/>
       <Route path='/our-story' element ={<OurStoryPage/>}/>

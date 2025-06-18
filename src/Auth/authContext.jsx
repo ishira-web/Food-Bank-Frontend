@@ -1,5 +1,6 @@
 // src/context/AuthContext.js
 import React, { createContext, useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
@@ -35,7 +36,7 @@ export function AuthProvider({ children }) {
 
       setUser(loggedUser);
       localStorage.setItem("user", JSON.stringify(loggedUser));
-
+      toast.success("Login successful")
       return { success: true };
     } catch (error) {
       console.error("Login error:", error);
@@ -47,6 +48,7 @@ export function AuthProvider({ children }) {
   function logout() {
     setUser(null);
     localStorage.removeItem("user");
+    toast.success("Logout successful");
   }
 
   return (

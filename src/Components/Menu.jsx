@@ -1,23 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { food_list } from '../assets/Images/assets.js';
 import { ShoppingCart } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cart from '../Components/Cart.jsx';
 
 function Menu() {
-  useEffect(()=>{window.scrollTo(0, 0)},[])
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchMenuData();
+  }, []);
+
   const [quantities, setQuantities] = useState({});
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const foodsByCategory = food_list.reduce((acc, food) => {
-    if (!acc[food.category]) {
-      acc[food.category] = [];
+  const [menuData, setMenuData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMenuData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/food/menu');
+      const data = await response.json();
+      setMenuData(data.data); // Assuming your API returns { data: [...] }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching menu data:', error);
+      setLoading(false);
     }
-    acc[food.category].push(food);
-    return acc;
-  }, {});
+  };
+
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
   const handleQuantityChange = (id, change) => {
     setQuantities(prev => ({
       ...prev,
@@ -25,7 +37,6 @@ function Menu() {
     }));
   };
 
-  // Handle add to cart
   const handleAddToCart = (food) => {
     const quantity = quantities[food._id] || 1;
     
@@ -52,13 +63,11 @@ function Menu() {
       }]);
     }
     
-    // Reset quantity for this item
     setQuantities(prev => ({
       ...prev,
       [food._id]: 0
     }));
   };
-
 
   const updateCartQuantity = (id, change) => {
     const existingItem = cartItems.find(item => item._id === id);
@@ -76,10 +85,13 @@ function Menu() {
     }
   };
 
-  // Remove item from cart
   const removeCartItem = (id) => {
     setCartItems(cartItems.filter(item => item._id !== id));
   };
+
+  if (loading) {
+    return <div className="w-full min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <div className='w-full min-h-screen p-4 font-Funnel_Display relative'>
@@ -97,7 +109,6 @@ function Menu() {
         </button>
       </div>
 
-      {/* Cart Component */}
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -106,15 +117,14 @@ function Menu() {
         removeItem={removeCartItem}
       />
 
-      {/* Menu Content */}
-      {Object.entries(foodsByCategory).map(([category, foods]) => (
-        <div key={category} className="mb-12">
+      {menuData.map((category) => (
+        <div key={category.categoryId} className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-[var(--Treasureana---Geocaching-App-3)] border-b-2 pb-2">
-            {category}
+            {category.categoryName}
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {foods.map((food) => (
+            {category.foods.map((food) => (
               <div 
                 key={food._id}
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
@@ -122,14 +132,14 @@ function Menu() {
                 <div className="relative h-48 overflow-hidden">
                   <img 
                     src={food.image} 
-                    alt={food.name}
+                    alt={food.foodName}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   />
                 </div>
                 
                 <div className="p-5 flex-grow">
                   <div className="flex justify-between items-start">
-                    <h3 className="text-xl font-bold text-gray-800">{food.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{food.foodName}</h3>
                     <p className="text-lg font-semibold text-amber-600">Rs. {food.price.toLocaleString()}</p>
                   </div>
                   
@@ -138,7 +148,6 @@ function Menu() {
                   </p>
                 </div>
 
-                {/* Quantity controls and Add to Cart button */}
                 <div className="p-4 border-t border-gray-100">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-gray-700">Quantity:</span>
