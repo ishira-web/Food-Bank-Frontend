@@ -10,6 +10,7 @@ import Login from './Components/Login'
 import Register from './Components/Register'
 import AdminRoutes from './Admin/Admin_Routes/AdminRoutes'
 import { AuthContext } from './Auth/authContext'
+import Profile from './Pages/Profile'
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
       <Route path='/login' element={<Login/>}/>
       <Route path='/register' element={<Register/>}/>
       <Route path='/admin/*' element={<AdminRoutes/>}/>
+      <Route path='/profile' element={<Profile/>}/>
     </Routes>
     </>
   )
