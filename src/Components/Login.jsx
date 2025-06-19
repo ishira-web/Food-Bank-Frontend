@@ -1,8 +1,7 @@
-// src/pages/Login.jsx
 import React, { useState, useContext } from "react";
-import SideImage from "../assets/Images/slide1.jpg";
-import { AuthContext } from "../Auth/authContext.jsx"; // adjust path if needed
 import { useNavigate } from "react-router-dom";
+import SideImage from "../assets/Images/slide1.jpg";
+import { AuthContext } from "../Auth/authContext.jsx";
 
 function Login() {
   const { login } = useContext(AuthContext);
@@ -11,24 +10,32 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
-    const result = await login(email, password);
+    try {
+      const result = await login(email, password);
 
-    if (result.success) {
-
-      const loggedInUser = JSON.parse(localStorage.getItem("user"));
-
-      if (loggedInUser?.role === "admin") {
-        navigate("/admin/dashboard");
-      } else if (loggedInUser?.role === "user") {
-        navigate("/");
+      if (result.success) {
+        const loggedInUser = JSON.parse(localStorage.getItem("user"));
+        
+        if (loggedInUser?.role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
+      } else {
+        setError(result.message || "Login failed. Please try again.");
       }
-    } else {
-      setError(result.message || "Failed to login");
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Login error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,7 +66,7 @@ function Login() {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display"
+                className="w-full px-4 py-3 border border-gray-300 rounded text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display"
                 placeholder="Enter your email"
                 required
               />
@@ -77,7 +84,7 @@ function Login() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display"
+                className="w-full px-4 py-3 border border-gray-300 rounded text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display"
                 placeholder="Enter your password"
                 required
               />
@@ -104,7 +111,7 @@ function Login() {
 
               <div className="text-sm">
                 <a
-                  href="#"
+                  href="/forgot-password"
                   className="font-medium text-[var(--Treasureana---Geocaching-App-8)] hover:text-[var(--Treasureana---Geocaching-App-9)]"
                 >
                   Forgot password?
@@ -114,9 +121,12 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-[var(--Treasureana---Geocaching-App-8)] hover:bg-[var(--Treasureana---Geocaching-App-9)] text-[var(--Treasureana---Geocaching-App-11)] font-Funnel_Display_Medium tracking-wide font-medium rounded-lg transition duration-200"
+              disabled={isLoading}
+              className={`w-full py-3 px-4 bg-[var(--Treasureana---Geocaching-App-8)] hover:bg-[var(--Treasureana---Geocaching-App-9)] text-white font-Funnel_Display_Medium tracking-wide font-medium rounded-lg transition duration-200 ${
+                isLoading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Sign In
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
 
             <div className="text-center text-sm text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display">
@@ -145,8 +155,8 @@ function Login() {
             The Ceylon Curry Club
           </h1>
           <p className="font-Funnel_Display text-[var(--Treasureana---Geocaching-App-6)] text-lg text-center px-12">
-            To keep connect with us please login with your personal informations by
-            email address and password
+            To keep connected with us please login with your personal information
+            using your email address and password
           </p>
         </div>
       </div>
