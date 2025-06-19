@@ -1,87 +1,24 @@
 import { Plus, ShoppingBag, Edit, Check, X } from 'lucide-react';
-import React, { useState , useEffect ,useContext} from 'react';
-import { AuthContext } from '../Auth/authContext'; 
+import React, { useState , useEffect} from 'react';
+
 function Profile() {
-    const { user: authUser } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: ""
+    name: "Ishira Pahasara",
+    email: "ishirapahasara8@gmail.com",
+    phone: "+94 77 123 4567",
+    address: "123 Treasure Street, Colombo, Sri Lanka"
   });
   const [tempProfile, setTempProfile] = useState({...profile});
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (authUser?._id) {
-        try {
-          const token = localStorage.getItem('token'); // Make sure you're storing the token
-          const response = await fetch(`http://localhost:5000/api/account/${authUser._id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-          }
-
-          const userData = await response.json();
-          setProfile({
-            name: userData.name || "",
-            email: userData.email || "",
-            phone: userData.phone || "",
-            address: userData.address || ""
-          });
-          setTempProfile({
-            name: userData.name || "",
-            email: userData.email || "",
-            phone: userData.phone || "",
-            address: userData.address || ""
-          });
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchUserData();
-    window.scrollTo(0, 0);
-  }, [authUser]);
 
   const handleEditClick = () => {
     setTempProfile({...profile});
     setIsEditing(true);
   };
 
-  const handleSaveClick = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/account/${authUser._id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(tempProfile)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
-      }
-
-      const updatedUser = await response.json();
-      setProfile(updatedUser);
-      setIsEditing(false);
-      // Optionally update the user in AuthContext/localStorage if needed
-    } catch (error) {
-      console.error('Error updating profile:', error);
-    }
+  const handleSaveClick = () => {
+    setProfile({...tempProfile});
+    setIsEditing(false);
   };
 
   const handleCancelClick = () => {
@@ -94,15 +31,6 @@ function Profile() {
       [e.target.name]: e.target.value
     });
   };
-
-  if (isLoading) {
-    return (
-      <div className='w-full min-h-screen bg-[var(--Treasureana---Geocaching-App-11)] text-[var(--Treasureana---Geocaching-App-6)] flex items-center justify-center'>
-        <p>Loading profile...</p>
-      </div>
-    );
-  }
-
   useEffect(()=>{window.scrollTo(0, 0);})
   return (
     <div className='w-full min-h-screen bg-[var(--Treasureana---Geocaching-App-11)]'>
