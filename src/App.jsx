@@ -9,7 +9,6 @@ import ReservationPage from './Pages/ReservationPage'
 import Login from './Components/Login'
 import Register from './Components/Register'
 import AdminRoutes from './Admin/Admin_Routes/AdminRoutes'
-import { AuthContext } from './Auth/authContext'
 import Profile from './Pages/Profile'
 
 
