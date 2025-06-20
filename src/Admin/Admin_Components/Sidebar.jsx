@@ -10,6 +10,7 @@ function Sidebar() {
         {name : "Manage Users" , path : "users"},
         {name : "Manage Orders" , path : "orders"},
         {name : "Manage Gallery" , path : "gallery"},
+        {name : "Manage Reservations" , path : "reservations"}
     ]
   return (
     <div className='w-64 h-screen bg-[var(--Treasureana---Geocaching-App-11)] text-white font-poppins fixed left-0 top-0 shadow-lg flex flex-col py-6 px-4'>

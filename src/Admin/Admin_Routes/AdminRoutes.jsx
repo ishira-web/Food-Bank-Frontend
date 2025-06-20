@@ -8,6 +8,7 @@ import ManageUSers from '../Admin_Components/ManageUSers'
 import ManageGallery from '../Admin_Components/ManageGallery'
 import ManageOrders from '../Admin_Components/ManageOrders'
 import ManageCategories from '../Admin_Components/ManageCategories'
+import ManageReservation from '../Admin_Components/ManageReservation'
 
 function AdminRoutes() {
   return (
@@ -21,6 +22,7 @@ function AdminRoutes() {
         <Route path="users" element={<ManageUSers/>} />
         <Route path="gallery" element={<ManageGallery/>} />
         <Route path="orders" element={<ManageOrders/>} />
+        <Route path="reservations" element={<ManageReservation/>} />
       </Route>
     </Routes>
   )
