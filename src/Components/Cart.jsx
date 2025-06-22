@@ -8,7 +8,7 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
 
   const handleProceedToPayment = () => {
     onClose();
-    navigate('/order-pre-pay', { state: { cartItems } });
+    navigate('/order-page', { state: { cartItems } });
   };
 
   return (

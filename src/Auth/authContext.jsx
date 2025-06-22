@@ -1,25 +1,70 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
+import jwtDecode from "jwt-decode";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [authState, setAuthState] = useState({
+    user: null,
+    token: null,
+    loading: true
+  });
 
-  // On mount: Load from localStorage
+  // Initialize auth state and check token validity
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    const initializeAuth = () => {
+      const storedToken = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-      setToken(storedToken);
-    }
+      if (storedToken) {
+        try {
+          const decoded = jwtDecode(storedToken);
+          
+          // Check token expiration
+          if (decoded.exp * 1000 < Date.now()) {
+            throw new Error("Token expired");
+          }
+
+          // Use server-provided user data if available
+          if (storedUser) {
+            const userData = JSON.parse(storedUser);
+            setAuthState({
+              user: userData,
+              token: storedToken,
+              loading: false
+            });
+          } else {
+            // Fallback to token claims if user data isn't stored
+            const userData = {
+              id: decoded.sub || decoded.id || decoded.userId,
+              role: decoded.role || 'user',
+              name: decoded.name || decoded.username || '',
+              email: decoded.email || ''
+            };
+            
+            setAuthState({
+              user: userData,
+              token: storedToken,
+              loading: false
+            });
+          }
+        } catch (error) {
+          console.error("Auth initialization error:", error);
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+          setAuthState({ user: null, token: null, loading: false });
+        }
+      } else {
+        setAuthState(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   // Login handler
-  async function login(email, password) {
+  const login = useCallback(async (email, password) => {
     try {
       const response = await fetch(`http://localhost:5000/api/account/login/me`, {
         method: "POST",
@@ -33,44 +78,84 @@ export function AuthProvider({ children }) {
       }
 
       const data = await response.json();
-
-      const loggedUser = data.user || data;
-      const token = data.token;
-
+      const { token } = data;
+      
       if (!token) {
         throw new Error("Token not received from server.");
       }
 
-      // Save to state
-      setUser(loggedUser);
-      setToken(token);
+      // Decode token to get user information
+      const decoded = jwtDecode(token);
+      
+      // Prefer server-provided user data if available
+      const userData = data.user || {
+        id: decoded.sub || decoded.id || decoded.userId,
+        role: decoded.role || 'user',
+        name: decoded.name || decoded.username || '',
+        email: decoded.email || email
+      };
 
-      // Save to localStorage
-      localStorage.setItem("user", JSON.stringify(loggedUser));
+      // Update state and storage
+      setAuthState({
+        user: userData,
+        token: token,
+        loading: false
+      });
+      
+      localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
 
       toast.success("Login successful");
-
-      return { success: true, user: loggedUser };
+      return { success: true, user: userData };
     } catch (error) {
       console.error("Login error:", error);
-      toast.error(error.message || "Something went wrong during login.");
+      toast.error(error.message || "Authentication failed");
       return { success: false, message: error.message };
     }
-  }
+  }, []);
 
   // Logout handler
-  function logout() {
-    setUser(null);
-    setToken(null);
+  const logout = useCallback(() => {
+    setAuthState({ user: null, token: null, loading: false });
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     toast.success("Logout successful");
-  }
+  }, []);
+
+  // Check if user has specific role
+  const hasRole = useCallback((role) => {
+    if (!authState.user) return false;
+    return authState.user.role === role;
+  }, [authState.user]);
+
+  // Check authentication status
+  const isAuthenticated = useCallback(() => {
+    if (!authState.token) return false;
+    
+    try {
+      const decoded = jwtDecode(authState.token);
+      return decoded.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
+  }, [authState.token]);
+
+  // Context value
+  const contextValue = {
+    user: authState.user,
+    token: authState.token,
+    loading: authState.loading,
+    login,
+    logout,
+    isAuthenticated,
+    hasRole,
+    isAdmin: hasRole('admin'),
+    isUser: hasRole('user')
+  };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
-      {children}
+    <AuthContext.Provider value={contextValue}>
+      {!authState.loading && children}
     </AuthContext.Provider>
   );
 }
