@@ -85,8 +85,7 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
               </div>
               <button 
                 onClick={handleProceedToPayment}
-                className="w-full bg-[var(--Treasureana---Geocaching-App-3)] hover:bg-opacity-90 text-white py-3 px-4 rounded-lg font-medium transition-colors"
-              >
+                className="w-full bg-[var(--Treasureana---Geocaching-App-3)] hover:bg-opacity-90 text-white py-3 px-4 rounded-lg font-medium transition-colors">
                 Proceed to Payment
               </button>
             </div>
@@ -96,5 +95,4 @@ function Cart({ isOpen, onClose, cartItems, updateQuantity, removeItem }) {
     </div>
   );
 }
-
 export default Cart;

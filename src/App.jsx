@@ -10,6 +10,7 @@ import Login from './Components/Login'
 import Register from './Components/Register'
 import AdminRoutes from './Admin/Admin_Routes/AdminRoutes'
 import Profile from './Pages/Profile'
+import OrderPage from './Pages/OrderPage'
 
 
 function App() {
@@ -21,12 +22,13 @@ function App() {
       <Route path='/' element={<HomePage/>}/>
       <Route path='/our-story' element ={<OurStoryPage/>}/>
       <Route path='/menu' element={<MenuPage/>}/>
-      <Route path='/order-pre-pay' element ={<PaymentPage/>}/>
+      <Route path='/order-pre-pay' element ={<OrderPage/>}/>
       <Route path='/reservation' element ={<ReservationPage/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/register' element={<Register/>}/>
       <Route path='/admin/*' element={<AdminRoutes/>}/>
       <Route path='/profile' element={<Profile/>}/>
+      <Route path='/order-page' element={<OrderPage/>}/>
     </Routes>
     </>
   )
