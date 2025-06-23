@@ -60,6 +60,7 @@ function ManageReservation() {
         { status: newStatus }
       );
       
+      toast.success(`Reservation status updated to ${newStatus}`);
       // Update local state
       setReservations(prev => 
         prev.map(res => 
