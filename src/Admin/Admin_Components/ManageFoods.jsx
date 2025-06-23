@@ -1,41 +1,96 @@
-import React, { useState } from 'react';
-import { Plus, Trash, Edit, Search, ChevronDown, X } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Plus, Trash, Edit, Search, X } from 'lucide-react';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ManageFoods() {
-  // State for food items
-  const [foods, setFoods] = useState([
-    {
-      id: 1,
-      name: 'Margherita Pizza',
-      category: 'Italian',
-      price: 12.99,
-      description: 'Classic pizza with tomato sauce, mozzarella, and basil',
-      image: 'https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-    },
-    {
-      id: 2,
-      name: 'Chicken Burger',
-      category: 'American',
-      price: 8.99,
-      description: 'Juicy chicken patty with lettuce and special sauce',
-      image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80'
-    }
-  ]);
-
-  // State for form
+  const [foods, setFoods] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentFood, setCurrentFood] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Form data state
   const [formData, setFormData] = useState({
     name: '',
-    category: '',
+    category: '', // Stores category ID
     price: '',
     description: '',
     image: null,
     imagePreview: ''
   });
 
-  // Available categories
-  const categories = ['Italian', 'American', 'Mexican', 'Chinese', 'Japanese', 'Indian', 'Mediterranean'];
+  // Create category map for quick lookup
+  const categoryMap = useMemo(() => {
+    return categories.reduce((map, category) => {
+      map[category._id] = category.categoryName;
+      return map;
+    }, {});
+  }, [categories]);
+
+  // Fetch foods and categories on component mount
+  useEffect(() => {
+    fetchFoods();
+    fetchCategories();
+  }, []);
+
+  const fetchFoods = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get('http://localhost:5000/api/food/menu');
+      if (response.data.success) {
+        // Flatten the nested food structure
+        const allFoods = response.data.data.flatMap(category => 
+          category.foods.map(food => ({
+            ...food,
+            categoryId: category.categoryId,
+            categoryName: category.categoryName
+          }))
+        );
+        setFoods(allFoods || []);
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch foods');
+      }
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to fetch foods';
+      setError(errorMsg);
+      toast.error(errorMsg);
+      console.error('Error fetching foods:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/category/allCategory');
+      if (response.data.success) {
+        setCategories(response.data.data || []);
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch categories');
+      }
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to fetch categories';
+      setError(errorMsg);
+      toast.error(errorMsg);
+      console.error('Error fetching categories:', err);
+    }
+  };
+
+  // Filter foods based on search term
+  const filteredFoods = foods.filter(food => {
+    const searchLower = searchTerm.toLowerCase();
+    const categoryName = categoryMap[food.categoryId] || '';
+    return (
+      (food.foodName?.toLowerCase().includes(searchLower)) ||
+      (categoryName.toLowerCase().includes(searchLower)) ||
+      (food.description?.toLowerCase().includes(searchLower))
+    );
+  });
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -85,57 +140,88 @@ function ManageFoods() {
   const openEditForm = (food) => {
     setCurrentFood(food);
     setFormData({
-      name: food.name,
-      category: food.category,
-      price: food.price,
+      name: food.foodName,
+      category: food.categoryId, // Use category ID
+      price: (food.price / 100).toFixed(2),
       description: food.description,
       image: null,
-      imagePreview: food.image
+      imagePreview: food.image || ''
     });
     setIsFormOpen(true);
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
+// Handle form submission
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  // Validate price
+  const priceValue = parseFloat(formData.price);
+  if (isNaN(priceValue)) {
+    setError('Please enter a valid price');
+    toast.error('Please enter a valid price');
+    return;
+  }
+
+  try {
+    const foodData = new FormData();
+    foodData.append('foodName', formData.name);
+    foodData.append('categoryName', formData.category); // Changed from 'category' to 'categoryName'
+    foodData.append('price', Math.round(priceValue * 100)); // Convert to cents
+    foodData.append('description', formData.description);
     
+    if (formData.image) {
+      foodData.append('image', formData.image);
+    }
+
+    let response;
     if (currentFood) {
       // Update existing food
-      const updatedFoods = foods.map(food => 
-        food.id === currentFood.id ? {
-          ...food,
-          name: formData.name,
-          category: formData.category,
-          price: parseFloat(formData.price),
-          description: formData.description,
-          image: formData.imagePreview.startsWith('data:') ? currentFood.image : formData.imagePreview
-        } : food
+      response = await axios.put(
+        `http://localhost:5000/api/food/update/${currentFood._id}`,
+        foodData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
       );
-      setFoods(updatedFoods);
+      toast.success('Food item updated successfully');
     } else {
       // Add new food
-      const newFood = {
-        id: Date.now(),
-        name: formData.name,
-        category: formData.category,
-        price: parseFloat(formData.price),
-        description: formData.description,
-        image: formData.imagePreview
-      };
-      setFoods([...foods, newFood]);
+      response = await axios.post(
+        'http://localhost:5000/api/food/createnew',
+        foodData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      toast.success('Food item created successfully');
     }
     
+    await fetchFoods();
     setIsFormOpen(false);
     resetForm();
-  };
-
+  } catch (err) {
+    const errorMsg = err.response?.data?.message || err.message || 'Failed to save food item';
+    setError(errorMsg);
+    toast.error(errorMsg);
+    console.error('Error saving food item:', err);
+  }
+};
   // Delete food
-  const deleteFood = (id) => {
-    setFoods(foods.filter(food => food.id !== id));
+  const deleteFood = async (id) => {
+    if (window.confirm('Are you sure you want to delete this food item?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/food/delete/${id}`);
+        toast.success('Food item deleted successfully');
+        await fetchFoods();
+      } catch (err) {
+        const errorMsg = err.response?.data?.message || err.message || 'Failed to delete food item';
+        setError(errorMsg);
+        toast.error(errorMsg);
+        console.error('Error deleting food item:', err);
+      }
+    }
   };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen ml-64 font-Funnel_Display">
+      <ToastContainer position="top-right" autoClose={3000} />
+      
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800">Manage Foods</h1>
         <button 
@@ -147,6 +233,15 @@ function ManageFoods() {
         </button>
       </div>
 
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+          <button onClick={() => setError(null)} className="float-right font-bold">
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       {/* Food Items Table */}
       <div className="bg-white rounded-xl shadow overflow-hidden mb-8">
         <div className="p-4 border-b border-gray-200">
@@ -156,73 +251,99 @@ function ManageFoods() {
               type="text"
               placeholder="Search foods..."
               className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
         
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Image
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Price
-              </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {foods.map((food) => (
-              <tr key={food.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="h-10 w-10 rounded-md overflow-hidden">
-                    <img src={food.image} alt={food.name} className="h-full w-full object-cover" />
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{food.name}</div>
-                  <div className="text-xs text-gray-500 line-clamp-1">{food.description}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {food.category}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  ${food.price.toFixed(2)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <button 
-                      onClick={() => openEditForm(food)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button 
-                      onClick={() => deleteFood(food.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <Trash size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {isLoading ? (
+          <div className="p-8 text-center">Loading foods...</div>
+        ) : filteredFoods.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">
+            {foods.length === 0 ? 'No food items found' : 'No matching food items found'}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Image
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredFoods.map((food) => (
+                  <tr key={food._id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="h-10 w-10 rounded-md overflow-hidden bg-gray-200">
+                        {food.image ? (
+                          <img 
+                            src={food.image} 
+                            alt={food.foodName} 
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.parentElement.innerHTML = '<div class="h-full w-full flex items-center justify-center"><span class="text-xs text-gray-500">No Image</span></div>';
+                            }}
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center">
+                            <span className="text-xs text-gray-500">No Image</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{food.foodName}</div>
+                      <div className="text-xs text-gray-500 line-clamp-1">{food.description}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {categoryMap[food.categoryId] || food.categoryName || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      ${(food.price / 100).toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2">
+                        <button 
+                          onClick={() => openEditForm(food)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button 
+                          onClick={() => deleteFood(food._id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <Trash size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Add/Edit Food Form Modal */}
       {isFormOpen && (
-        <div className="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-md">
             <div className="flex justify-between items-center border-b border-gray-200 p-4">
               <h2 className="text-xl font-semibold text-gray-800">
@@ -266,7 +387,9 @@ function ManageFoods() {
                   >
                     <option value="">Select a category</option>
                     {categories.map((category) => (
-                      <option key={category} value={category}>{category}</option>
+                      <option key={category._id} value={category._id}>
+                        {category.categoryName}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -304,7 +427,7 @@ function ManageFoods() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Food Image</label>
                   <div className="mt-1 flex items-center">
                     <label className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
-                      <span>Upload Image</span>
+                      <span>{formData.imagePreview ? 'Change Image' : 'Upload Image'}</span>
                       <input 
                         type="file" 
                         className="sr-only" 

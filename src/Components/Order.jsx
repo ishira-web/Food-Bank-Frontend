@@ -149,7 +149,7 @@ function Order() {
         phone: formData.phone,
         name: formData.fullName,
         email: formData.email,
-        paymentMethod
+        paymentMethod : paymentIntentId
       };
 
       const response = await axios.post(

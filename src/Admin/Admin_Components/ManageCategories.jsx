@@ -1,24 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash, Edit, Search, X } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function ManageCategories() {
-  // Sample categories data
-  const [categories, setCategories] = useState([
-    { id: 1, name: 'Italian' },
-    { id: 2, name: 'American' },
-    { id: 3, name: 'Mexican' },
-    { id: 4, name: 'Chinese' }
-  ]);
-
-  // State for form
+  const [categories, setCategories] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [categoryName, setCategoryName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get('http://localhost:5000/api/category/allCategory');
+      setCategories(response.data.data);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch categories');
+      console.error('Error fetching categories:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Filter categories based on search term
   const filteredCategories = categories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    category.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Open form for adding new category
@@ -31,37 +46,52 @@ function ManageCategories() {
   // Open form for editing category
   const openEditForm = (category) => {
     setCurrentCategory(category);
-    setCategoryName(category.name);
+    setCategoryName(category.categoryName);
     setIsFormOpen(true);
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (categoryName.trim() === '') return;
 
-    if (currentCategory) {
-      // Update existing category
-      setCategories(categories.map(category =>
-        category.id === currentCategory.id ? { ...category, name: categoryName } : category
-      ));
-    } else {
-      // Add new category
-      const newCategory = {
-        id: Date.now(),
-        name: categoryName
-      };
-      setCategories([...categories, newCategory]);
+    try {
+      if (currentCategory) {
+        // Update existing category
+        await axios.put(`http://localhost:5000/api/category/update/${currentCategory._id}`, {
+          categoryName: categoryName.trim()
+        });
+      } else {
+        // Add new category
+        await axios.post('http://localhost:5000/api/category/create', {
+          categoryName: categoryName.trim()
+        });
+      }
+      
+      // Refresh the categories list
+      await fetchCategories();
+      setIsFormOpen(false);
+      setCategoryName('');
+      toast.success('Category create successfully !')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to save category');
+      console.error('Error saving category:', err);
     }
-    
-    setIsFormOpen(false);
-    setCategoryName('');
   };
 
   // Delete category
-  const deleteCategory = (id) => {
-    setCategories(categories.filter(category => category.id !== id));
+  const deleteCategory = async (id) => {
+    if (window.confirm('Are you sure you want to delete this category?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/category/delete/${id}`);
+        // Refresh the categories list
+        await fetchCategories();
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to delete category');
+        console.error('Error deleting category:', err);
+      }
+    }
   };
 
   return (
@@ -76,6 +106,15 @@ function ManageCategories() {
           Add New Category
         </button>
       </div>
+
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+          <button onClick={() => setError(null)} className="float-right font-bold">
+            <X size={16} />
+          </button>
+        </div>
+      )}
 
       {/* Categories Table */}
       <div className="bg-white rounded-xl shadow overflow-hidden mb-8">
@@ -92,49 +131,53 @@ function ManageCategories() {
           </div>
         </div>
         
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category Name
-              </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredCategories.map((category) => (
-              <tr key={category.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {category.id}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{category.name}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <button 
-                      onClick={() => openEditForm(category)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button 
-                      onClick={() => deleteCategory(category.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <Trash size={16} />
-                    </button>
-                  </div>
-                </td>
+        {isLoading ? (
+          <div className="p-8 text-center">Loading categories...</div>
+        ) : (
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category Name
+                </th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredCategories.map((category) => (
+                <tr key={category._id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {category._id}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{category.categoryName}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
+                      <button 
+                        onClick={() => openEditForm(category)}
+                        className="text-blue-600 hover:text-blue-900"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button 
+                        onClick={() => deleteCategory(category._id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <Trash size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Add/Edit Category Form Modal */}
