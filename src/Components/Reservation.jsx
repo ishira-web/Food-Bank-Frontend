@@ -100,9 +100,9 @@ function Reservation() {
           <div className='absolute  bg-black/50 z-10'></div> 
            <img src={ImageBG} alt="" className='absolute inset-0 w-full h-[20rem] object-cover z-10 ' />
         </div>
-        <div className='relative z-10 flex flex-col gap-4 text-white font-sans max-w-[20rem] p-6 pt-20'>
+        <div className='relative z-10 flex flex-col gap-4 text-white font-sans w-full p-6 pt-20'>
           <h1 className='text-sm font-Funnel_Display_Medium'>Book Your Table Today</h1>
-          <h1 className='text-2xl font-Funnel_Display_SemiBold'>Make a Reservation</h1>
+          <h1 className='text-4xl font-Funnel_Display_SemiBold'>Make a Reservation</h1>
         </div>
       </div>
       
@@ -245,7 +245,7 @@ function Reservation() {
                 name='reservedDate'
                 value={formData.reservedDate}
                 onChange={handleChange}
-                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600'
+                className='w-full px-4 py-2 border  border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600'
                 required
               />
             </div>
