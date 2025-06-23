@@ -2,6 +2,7 @@ import React from 'react';
 import { Plus, Edit, Trash, Search, ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
 
 function Dashboard() {
+  
   // Sample data for recent orders
   const recentOrders = [
     { id: '#ORD-001', customer: 'John Doe', date: '2023-10-15', amount: '$120', status: 'Completed' },

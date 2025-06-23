@@ -1,7 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Users, Package, CreditCard, Activity, Settings, Plus, Search, ChevronDown, MoreHorizontal } from 'lucide-react';
 
 function Admin() {
+  const [count, setCount] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [foodCount,setFoodCount] = useState(null);
+  const [foodLoading, setFoodLoading] = useState(true);
+  const [foodError, setFoodError] = useState(null);
+
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/account/count');
+        if (!response.ok) {
+          throw new Error('Failed to fetch user count');
+        }
+        const data = await response.json();
+        setCount(data.count); // Make sure your backend returns {count: number}
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchFoodCount = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/food/getNumber');
+        if (!response.ok) {
+          throw new Error('Failed to fetch food count');
+        }
+        const data = await response.json();
+        // Make sure your backend returns either {count: number} or {foodCount: number}
+        setFoodCount(data.foodCount || data.count); 
+      } catch (err) {
+        setFoodError(err.message);
+      } finally {
+        setFoodLoading(false);
+      }
+    };
+    fetchFoodCount();
+  }, []);
   // Sample data
   const users = [
     { id: 1, name: 'Alex Johnson', email: 'alex@example.com', role: 'Admin', lastActive: '2 hours ago', status: 'active' },
@@ -11,8 +55,8 @@ function Admin() {
   ];
 
   const stats = [
-    { title: 'Total Users', value: '1,248', icon: Users, change: '+12%', trend: 'up' },
-    { title: 'Products', value: '356', icon: Package, change: '+5%', trend: 'up' },
+    { title: 'Total Users', value: count, icon: Users, change: '+12%', trend: 'up' },
+    { title: 'Products', value: foodCount, icon: Package, change: '+5%', trend: 'up' },
     { title: 'Transactions', value: '1,892', icon: CreditCard, change: '-2%', trend: 'down' },
     { title: 'Active Now', value: '56', icon: Activity, change: '+8%', trend: 'up' },
   ];
