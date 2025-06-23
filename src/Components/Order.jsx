@@ -33,6 +33,9 @@ function Order() {
     email: ''
   });
 
+  // Card type state
+  const [cardType, setCardType] = useState('');
+
   // Initialize form with user data when available
   useEffect(() => {
     if (user) {
@@ -47,7 +50,7 @@ function Order() {
 
   // Check authentication and role
   useEffect(() => {
-    if (authLoading) return; // Wait for auth to initialize
+    if (authLoading) return;
     
     if (!isAuthenticated()) {
       toast.warning('Please login to place an order');
@@ -63,23 +66,25 @@ function Order() {
 
   // Calculate order totals
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.08; // 8% tax
+  const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
   // Card type detection
-  const detectCardType = (number) => {
-    const num = number.replace(/\D/g, '');
-    if (/^4/.test(num)) {
-      return 'Visa';
-    } else if (/^5[1-5]/.test(num)) {
-      return 'Mastercard';
-    } else if (/^3[47]/.test(num)) {
-      return 'Amex';
-    }
-    return '';
-  };
-
-  const cardType = detectCardType(cardNumber);
+  useEffect(() => {
+    const detectCardType = (number) => {
+      const num = number.replace(/\D/g, '');
+      if (/^4/.test(num)) {
+        return 'Visa';
+      } else if (/^5[1-5]/.test(num)) {
+        return 'Mastercard';
+      } else if (/^3[47]/.test(num)) {
+        return 'Amex';
+      }
+      return '';
+    };
+    
+    setCardType(detectCardType(cardNumber));
+  }, [cardNumber]);
 
   const renderCardIcon = () => {
     switch (cardType) {
@@ -108,19 +113,25 @@ function Order() {
     // Basic card validation
     const cleanedCard = cardNumber.replace(/\D/g, '');
     if (cleanedCard.length < 13 || cleanedCard.length > 19) {
-      toast.error('Please enter a valid card number');
+      toast.error('Please enter a valid card number (13-19 digits)');
+      return false;
+    }
+    
+    // Check if card type is supported
+    if (!cardType) {
+      toast.error('Unsupported card type. We accept Visa, Mastercard, and Amex');
       return false;
     }
     
     // Expiry date validation (MM/YY format)
-    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+    if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(expiryDate)) {
       toast.error('Please enter expiry date in MM/YY format');
       return false;
     }
     
     // CVV validation
     if (!/^\d{3,4}$/.test(cvv)) {
-      toast.error('Please enter a valid CVV');
+      toast.error('Please enter a valid CVV (3-4 digits)');
       return false;
     }
     
@@ -135,25 +146,32 @@ function Order() {
     setIsSubmitting(true);
 
     try {
-      // Prepare order items
+      // Prepare order items with required fields
       const orderItems = cartItems.map(item => ({
         foodId: item._id,
+        foodName: item.foodName,
         quantity: item.quantity,
         price: item.price
       }));
 
+      // Prepare order data for backend
       const orderData = {
+        user: user._id, // Send user ID
         orderItems,
         totalAmount: total,
-        address: formData.address,
+        deliveryAddress: formData.address, // Match backend field name
         phone: formData.phone,
-        name: formData.fullName,
+        customerName: formData.fullName, // Match backend field name
         email: formData.email,
-        paymentMethod : paymentIntentId
+        paymentMethod: paymentMethod,
+        ...(paymentMethod === 'card' && {
+          cardNumber: cardNumber.replace(/\D/g, ''),
+          cardType: cardType
+        })
       };
 
       const response = await axios.post(
-        'http://localhost:5000/api/order/', 
+        'http://localhost:5000/api/order/create', 
         orderData,
         { 
           headers: {
