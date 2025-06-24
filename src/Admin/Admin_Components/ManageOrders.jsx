@@ -76,7 +76,6 @@ function ManageOrders() {
         order._id === orderId ? { ...order, orderStatus: newStatus } : order
       ));
       
-      // Make API request
       await axios.put(
         `http://localhost:5000/api/order/update-status/${orderId}`,
         { status: newStatus },
@@ -84,7 +83,7 @@ function ManageOrders() {
       );
       
       toast.success('Order status updated successfully');
-      fetchOrders(); // Refresh data to get latest status and any backend updates
+      fetchOrders(); 
     } catch (error) {
       console.error('Error updating order status:', error);
       

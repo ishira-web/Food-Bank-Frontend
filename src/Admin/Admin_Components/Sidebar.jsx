@@ -1,7 +1,15 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../Auth/authContext'
 
 function Sidebar() {
+   const {logout} =  useContext(AuthContext)
+   const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    }
     const menuItems = [
         {name : 'Dashboard' ,path : "dashboard"},
         {name : "Manage Admins" , path : "admins"},
@@ -30,7 +38,7 @@ function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <button className='mt-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition-colors w-full text-center'> 
+      <button  onClick={handleLogout} className='mt-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition-colors w-full text-center'> 
         Logout
       </button>
     </div>

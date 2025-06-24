@@ -91,7 +91,6 @@ export function AuthProvider({ children }) {
       const userData = data.user || {
         id: decoded.sub || decoded.id || decoded.userId,
         role: decoded.role || 'user',
-        name: decoded.name || decoded.username || '',
         email: decoded.email || email
       };
 

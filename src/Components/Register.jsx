@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import SideImage from '../assets/Images/slide1.jpg';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -10,6 +12,8 @@ function Register() {
     phoneNumber: '',
     gender: ''
   });
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,12 +23,43 @@ function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
-    // You would typically send this data to your backend
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  try {
+    // Clean phone number (remove non-digit characters)
+    const cleanedPhone = formData.phoneNumber.replace(/\D/g, '');
+    if (!cleanedPhone) throw new Error('Invalid phone number');
+
+    // Prepare registration data
+    const registrationData = {
+      ...formData,
+      phoneNumber: parseInt(cleanedPhone, 10)
+    };
+
+    // Send request to backend
+    const response = await fetch('http://localhost:5000/api/account/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registrationData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Registration failed');
+    }
+
+    // Registration successful
+    toast.success("Registration successful! Please login.");
+    navigate('/');
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className='w-full min-h-screen flex flex-row bg-[var(--Treasureana---Geocaching-App-11)]'>
@@ -147,11 +182,12 @@ function Register() {
 
             {/* Submit Button */}
             <button
-              type='submit'
-              className='w-full py-3 px-4 bg-[var(--Treasureana---Geocaching-App-8)] hover:bg-[var(--Treasureana---Geocaching-App-9)] text-[var(--Treasureana---Geocaching-App-11)] font-Funnel_Display font-medium rounded mt-6 transition duration-200'
-            >
-              Register Now
-            </button>
+  type='submit'
+  disabled={isSubmitting}
+  className={`w-full py-3 px-4 bg-[var(--Treasureana---Geocaching-App-8)] text-[var(--Treasureana---Geocaching-App-11)] font-Funnel_Display font-medium rounded mt-6 transition duration-200 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[var(--Treasureana---Geocaching-App-9)]'}`}
+>
+  {isSubmitting ? 'Registering...' : 'Register Now'}
+</button>
 
             {/* Login Link */}
             <div className='text-center text-sm text-[var(--Treasureana---Geocaching-App-8)] mt-4 font-Funnel_Display'>

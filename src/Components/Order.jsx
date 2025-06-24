@@ -180,8 +180,8 @@ function Order() {
         }
       );
 
-      toast.success('Order placed successfully!');
-      navigate('/order-confirmation', { 
+      toast.success('Order placed successfully check your profile to order status !');
+      navigate('/', { 
         state: { 
           order: response.data,
           cartItems: [] // Clear cart after successful order

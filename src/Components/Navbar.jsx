@@ -21,10 +21,11 @@ function Navbar() {
     <div className="fixed top-0 left-0 right-0 z-50 bg-[var(--Treasureana---Geocaching-App-7)] shadow-md">
       <div className="px-5 h-[5rem] flex items-center justify-between">
         {/* Logo */}
+        <Link to="/">
         <div className="flex items-center gap-3">
           <img src={Logo} alt="Logo" className="h-28" />
         </div>
-
+        </Link>
         {/* Navigation Links */}
         <ul className="flex items-center gap-8 text-[var(--Treasureana---Geocaching-App-4)] font-Funnel_Display group">
           <Link to="/menu">

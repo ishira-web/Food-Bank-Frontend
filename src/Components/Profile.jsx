@@ -2,6 +2,8 @@ import { Plus, ShoppingBag, Edit, Check, X, Search, Calendar, Package, CreditCar
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,6 +13,7 @@ function Profile() {
   const [orders, setOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [profilePicturePreview, setProfilePicturePreview] = useState(null);
 
   const fetchUserData = async () => {
     try {
@@ -54,21 +57,66 @@ function Profile() {
   const handleSaveClick = async () => {
     try {
       const token = localStorage.getItem('token');
+      const userId = profile._id;
+
+      // Create FormData
+      const formData = new FormData();
+      formData.append('firstName', tempProfile.firstName);
+      formData.append('lastName', tempProfile.lastName);
+      formData.append('email', tempProfile.email);
+      formData.append('phoneNumber', tempProfile.phoneNumber);
+      formData.append('gender', tempProfile.gender);
+      
+      // Append file if exists
+      if (tempProfile.profilePictureFile) {
+        formData.append('profilePicture', tempProfile.profilePictureFile);
+      }
 
       const response = await axios.put(
-        'http://localhost:5000/api/account/me',
-        tempProfile,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `http://localhost:5000/api/account/${userId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
 
-      setProfile(response.data.data);
+      // Update profile and clean up - FIXED HERE
+      setProfile(response.data.user);
+      
       setIsEditing(false);
+      
+      if (profilePicturePreview) {
+        URL.revokeObjectURL(profilePicturePreview);
+        setProfilePicturePreview(null);
+      }
+      
+      toast.success('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
+      
+      if (profilePicturePreview) {
+        URL.revokeObjectURL(profilePicturePreview);
+        setProfilePicturePreview(null);
+      }
+      
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          'Failed to update profile. Please try again.';
+      
+      toast.error(errorMessage);
     }
   };
 
   const handleCancelClick = () => {
+    // Clean up preview URL
+    if (profilePicturePreview) {
+      URL.revokeObjectURL(profilePicturePreview);
+      setProfilePicturePreview(null);
+    }
+    
     setIsEditing(false);
   };
 
@@ -77,6 +125,21 @@ function Profile() {
       ...tempProfile,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setProfilePicturePreview(previewUrl);
+      
+      setTempProfile({
+        ...tempProfile,
+        profilePictureFile: file
+      });
+    }
   };
 
   const getStatusDetails = (status) => {
@@ -134,6 +197,19 @@ function Profile() {
 
   return (
     <div className='w-full min-h-screen bg-[var(--Treasureana---Geocaching-App-11)]'>
+      <ToastContainer 
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      
       <div className='flex flex-col md:flex-row w-full'>
         {/* Profile Section */}
         <div className='w-full md:w-1/2 min-h-screen p-8'>
@@ -147,15 +223,36 @@ function Profile() {
 
             {/* Profile Picture */}
             <div className='relative mb-6'>
-              <div className='w-32 h-32 rounded-full bg-[var(--Treasureana---Geocaching-App-8)] flex items-center justify-center overflow-hidden'>
-                <span className='text-white text-4xl font-bold'>
-                  {profile.firstName[0]}{profile.lastName[0]}
-                </span>
-              </div>
+              {isEditing && profilePicturePreview ? (
+                <img 
+                  src={profilePicturePreview} 
+                  alt="Preview" 
+                  className='w-32 h-32 rounded-full object-cover'
+                />
+              ) : profile.profilePicture ? (
+                <img 
+                  src={profile.profilePicture} 
+                  alt="Profile" 
+                  className='w-32 h-32 rounded-full object-cover'
+                />
+              ) : (
+                <div className='w-32 h-32 rounded-full bg-[var(--Treasureana---Geocaching-App-8)] flex items-center justify-center overflow-hidden'>
+                  <span className='text-white text-4xl font-bold'>
+                    {profile.firstName[0]}{profile.lastName[0]}
+                  </span>
+                </div>
+              )}
+              
               {isEditing && (
-                <button className='absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md'>
+                <label className='absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer'>
                   <Plus className='w-5 h-5' />
-                </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
               )}
             </div>
 
@@ -239,7 +336,7 @@ function Profile() {
                 {isEditing ? (
                   <select
                     name='gender'
-                    value={tempProfile.gender}
+                    value={tempProfile.gender || ''}
                     onChange={handleChange}
                     className='w-full px-4 py-2 rounded-md border border-[var(--Treasureana---Geocaching-App-10)] bg-white focus:outline-none focus:ring-2 focus:ring-[var(--Treasureana---Geocaching-App-8)]'
                   >
@@ -247,10 +344,13 @@ function Profile() {
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
                   </select>
                 ) : (
                   <div className='w-full px-4 py-2 rounded-md bg-gray-50 min-h-[42px]'>
-                    {profile.gender || 'N/A'}
+                    {profile.gender ? 
+                      profile.gender.charAt(0).toUpperCase() + profile.gender.slice(1) : 
+                      'Not specified'}
                   </div>
                 )}
               </div>
@@ -295,6 +395,16 @@ function Profile() {
               <h2 className='text-3xl font-bold text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display'>
                 My Orders
               </h2>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search orders..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Treasureana---Geocaching-App-8)]"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              </div>
             </div>
             
             {ordersLoading ? (
