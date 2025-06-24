@@ -142,10 +142,7 @@ function ManageReservation() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800">Manage Reservations</h1>
       </div>
-
-      {/* Filters */}
       <div className="bg-white rounded-xl shadow p-4 mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Status Filter */}
         <div>
           <select
             value={filters.status}
@@ -160,8 +157,6 @@ function ManageReservation() {
             ))}
           </select>
         </div>
-        
-        {/* Date Filter */}
         <div>
           <input
             type="date"
@@ -170,8 +165,6 @@ function ManageReservation() {
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        
-        {/* Items Per Page */}
         <div>
           <select
             value={filters.limit}
@@ -185,8 +178,6 @@ function ManageReservation() {
           </select>
         </div>
       </div>
-
-      {/* Loading & Error States */}
       {loading && (
         <div className="text-center py-8">
           <p>Loading reservations...</p>
@@ -198,8 +189,6 @@ function ManageReservation() {
           {error}
         </div>
       )}
-
-      {/* Reservations Table */}
       {!loading && !error && (
         <>
           <div className="bg-white rounded-xl shadow overflow-hidden">
@@ -285,8 +274,6 @@ function ManageReservation() {
               </div>
             )}
           </div>
-
-          {/* Pagination Controls */}
           <div className="mt-4 flex justify-between items-center">
             <div>
               Showing {reservations.length} of {pagination.total} reservations
