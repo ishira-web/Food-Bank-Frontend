@@ -20,7 +20,7 @@ function Menu() {
     try {
       const response = await fetch('http://localhost:5000/api/food/menu');
       const data = await response.json();
-      setMenuData(data.data); // Assuming your API returns { data: [...] }
+      setMenuData(data.data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching menu data:', error);
@@ -94,7 +94,7 @@ function Menu() {
   }
 
   return (
-    <div className='w-full min-h-screen p-4 font-Funnel_Display relative'>
+    <div className='w-full min-h-screen p-4 font-Funnel_Display relative '>
       <div className="fixed top-4 right-4 z-40">
         <button 
           onClick={() => setIsCartOpen(true)}
@@ -109,6 +109,8 @@ function Menu() {
         </button>
       </div>
 
+      <ToastContainer position="top-right" autoClose={2000} />
+      
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -117,77 +119,83 @@ function Menu() {
         removeItem={removeCartItem}
       />
 
-      {menuData.map((category) => (
-        <div key={category.categoryId} className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-[var(--Treasureana---Geocaching-App-3)] border-b-2 pb-2">
-            {category.categoryName}
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {category.foods.map((food) => (
-              <div 
-                key={food._id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={food.image} 
-                    alt={food.foodName}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  />
-                </div>
-                
-                <div className="p-5 flex-grow">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-xl font-bold text-gray-800">{food.foodName}</h3>
-                    <p className="text-lg font-semibold text-amber-600">Rs. {food.price.toLocaleString()}</p>
-                  </div>
-                  
-                  <p className="mt-3 text-gray-600 text-sm min-h-[40px]">
-                    {food.description}
-                  </p>
-                </div>
-
-                <div className="p-4 border-t border-gray-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-gray-700">Quantity:</span>
-                    <div className="flex items-center">
-                      <button 
-                        onClick={() => handleQuantityChange(food._id, -1)}
-                        className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
-                        disabled={!quantities[food._id]}
-                      >
-                        -
-                      </button>
-                      <span className="mx-3 w-8 text-center">
-                        {quantities[food._id] || 0}
-                      </span>
-                      <button 
-                        onClick={() => handleQuantityChange(food._id, 1)}
-                        className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
-                      >
-                        +
-                      </button>
+      <div className="max-w-7xl mx-auto">
+        {menuData.map((category) => (
+          <div key={category.categoryId} className="mb-16">
+            <h2 className="text-3xl font-bold mb-8 text-[var(--Treasureana---Geocaching-App-3)] border-b-2 pb-3 border-amber-200">
+              {category.categoryName}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {category.foods.map((food) => (
+                <div 
+                  key={food._id}
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-gray-100"
+                >
+                  {/* Enhanced Image Section */}
+                  <div className="relative h-60 bg-gray-100 flex items-center justify-center  group overflow-hidden">
+                    <img 
+                      src={food.image} 
+                      alt={food.foodName}
+                      className="w-full min-h-full  object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                      <h3 className="text-xl font-bold text-[var(--Treasureana---Geocaching-App-3)]">{food.foodName}</h3>
                     </div>
                   </div>
                   
-                  <button
-                    onClick={() => handleAddToCart(food)}
-                    disabled={!(quantities[food._id] > 0)}
-                    className={`w-full py-2 rounded-lg font-medium transition-colors ${
-                      quantities[food._id] > 0
-                        ? 'bg-[var(--Treasureana---Geocaching-App-3)] text-white hover:bg-opacity-90'
-                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    Add to Cart
-                  </button>
+                  <div className="p-5 flex-grow flex flex-col">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="text-xl font-bold text-gray-800">{food.foodName}</h3>
+                      <h1 className="text-sm font-semibold text-amber-600">Rs.{food.price.toLocaleString()}</h1>
+                    </div>
+                    
+                    <p className="text-gray-600 text-sm mb-4 flex-grow">
+                      {food.description}
+                    </p>
+
+                    <div className="mt-auto">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-gray-700 font-medium">Quantity:</span>
+                        <div className="flex items-center">
+                          <button 
+                            onClick={() => handleQuantityChange(food._id, -1)}
+                            className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-gray-700 disabled:opacity-40"
+                            disabled={!quantities[food._id]}
+                          >
+                            -
+                          </button>
+                          <span className="mx-3 w-8 text-center font-medium">
+                            {quantities[food._id] || 0}
+                          </span>
+                          <button 
+                            onClick={() => handleQuantityChange(food._id, 1)}
+                            className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-gray-700"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={() => handleAddToCart(food)}
+                        disabled={!(quantities[food._id] > 0)}
+                        className={`w-full py-3 rounded-xl font-medium transition-colors ${
+                          quantities[food._id] > 0
+                            ? 'bg-[var(--Treasureana---Geocaching-App-3)] text-white hover:bg-opacity-90 hover:scale-[1.02] active:scale-[0.98]'
+                            : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        }`}
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
