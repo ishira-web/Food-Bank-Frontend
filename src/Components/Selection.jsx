@@ -14,7 +14,7 @@ function Selection() {
       </div>
       
       {/* Category Cards Grid */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center cursor-pointer'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  justify-items-center cursor-pointer'>
         {/* Tasty Titbits*/}
         <div className="w-full max-w-[18rem] h-[25rem] group relative">
           <div className="w-full h-full rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">

@@ -8,6 +8,7 @@ import Slide2 from '../assets/Images/slide2.jpg';
 import Slide3 from '../assets/Images/slide3.jpg';
 import Slide4 from '../assets/Images/slide4.jpg';
 import Slide5 from '../assets/Images/slide5.jpg';
+import { Link } from 'react-router-dom';
 
 function Header() {
   return (
@@ -48,8 +49,8 @@ function Header() {
          Spices hold many secrets. They are a repository of culture and heritage; an articulation of tradition and ritual. 
         </p>
         <div className='flex flex-row gap-5'>
-          <button className='w-[10rem] bg-[var(--Treasureana---Geocaching-App-4)] py-2 text-[var(--Treasureana---Geocaching-App-7)] font-Funnel_Display'>View Menu</button>
-          <button className='w-[10rem] bg-[var(--Treasureana---Geocaching-App-4)] py-2 text-[var(--Treasureana---Geocaching-App-7)] font-Pacifico'>Reservation</button>
+          <Link to="menu"><button className='w-[10rem] bg-[var(--Treasureana---Geocaching-App-4)] py-2 text-[var(--Treasureana---Geocaching-App-7)] font-Funnel_Display'>View Menu</button></Link>
+           <Link to="reservation"><button className='w-[10rem] bg-[var(--Treasureana---Geocaching-App-4)] py-2 text-[var(--Treasureana---Geocaching-App-7)] font-Pacifico'>Reservation</button></Link>
         </div>
       </div>
     </div>

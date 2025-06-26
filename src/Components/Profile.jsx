@@ -395,16 +395,6 @@ function Profile() {
               <h2 className='text-3xl font-bold text-[var(--Treasureana---Geocaching-App-8)] font-Funnel_Display'>
                 My Orders
               </h2>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search orders..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Treasureana---Geocaching-App-8)]"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              </div>
             </div>
             
             {ordersLoading ? (
@@ -497,14 +487,6 @@ function Profile() {
                             </p>
                           </div>
                         </div>
-                        
-                        <button 
-                          className="mt-4 w-full py-2.5 bg-[var(--Treasureana---Geocaching-App-1)] text-[var(--Treasureana---Geocaching-App-8)] rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-opacity-90 transition"
-                          onClick={() => window.location.href = `/order/${order._id}`}
-                        >
-                          View Order Details
-                          <ChevronRight size={18} />
-                        </button>
                       </div>
                     </div>
                   );

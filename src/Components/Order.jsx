@@ -387,7 +387,7 @@ function Order() {
           
           <button
             type='submit'
-            className='w-full py-3 bg-[var(--Treasureana---Geocaching-App-9)] text-white rounded-lg font-semibold hover:bg-opacity-90 transition duration-200 flex items-center justify-center disabled:opacity-50'
+            className='w-full py-3 bg-[var(--Treasureana---Geocaching-App-9)] text-black rounded-lg font-semibold hover:bg-opacity-90 transition duration-200 flex items-center justify-center disabled:opacity-50'
             disabled={isSubmitting || authLoading}
           >
             {isSubmitting ? (

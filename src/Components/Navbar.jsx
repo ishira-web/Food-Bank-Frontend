@@ -13,8 +13,6 @@ function Navbar() {
   
   const mobileMenuRef = useRef(null);
   const mobileDropdownRef = useRef(null);
-
-  // GSAP animations for mobile menu
   useEffect(() => {
     if (mobileMenuRef.current) {
       if (mobileMenuOpen) {
@@ -98,9 +96,9 @@ function Navbar() {
                 Our Story
               </li>
             </Link>
-            <li className="cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold">
+            <Link to="/about"><li className="cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold">
               About Us
-            </li>
+            </li></Link>
             <li className="cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out hover:font-Funnel_Display_SemiBold">
               Contact
             </li>
@@ -223,8 +221,6 @@ function Navbar() {
                   <span className="font-Funnel_Display">My Account</span>
                   <User className="w-5 h-5" />
                 </button>
-
-                {/* Mobile Dropdown */}
                 <div 
                   ref={mobileDropdownRef}
                   className="overflow-hidden"
