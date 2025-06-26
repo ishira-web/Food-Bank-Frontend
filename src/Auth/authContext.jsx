@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
-import axios from 'axios';
 
 export const AuthContext = createContext();
 
@@ -66,49 +65,53 @@ export function AuthProvider({ children }) {
 
   // Login handler
   const login = useCallback(async (email, password) => {
-  try {
-    const response = await axios.post(
-      `${import.meta.env.REACT_APP_SECRET_URL}api/account/login/me`,
-      { email, password },
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+    try {
+      const response = await fetch(`${import.meta.env.REACT_APP_SECRET_URL}api/account/login/me`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
       }
-    );
 
-    const { token, user: serverUser } = response.data;
+      const data = await response.json();
+      const { token } = data;
+      
+      if (!token) {
+        throw new Error("Token not received from server.");
+      }
 
-    if (!token) {
-      throw new Error("Token not received from server.");
+      // Decode token to get user information
+      const decoded = jwtDecode(token);
+      
+      // Prefer server-provided user data if available
+      const userData = data.user || {
+        id: decoded.sub || decoded.id || decoded.userId,
+        role: decoded.role || 'user',
+        email: decoded.email || email
+      };
+
+      // Update state and storage
+      setAuthState({
+        user: userData,
+        token: token,
+        loading: false
+      });
+      
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
+
+      toast.success("Login successful");
+      return { success: true, user: userData };
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.message || "Authentication failed");
+      return { success: false, message: error.message };
     }
-
-    const decoded = jwtDecode(token);
-    
-    const userData = serverUser || {
-      id: decoded.sub || decoded.id || decoded.userId,
-      role: decoded.role || 'user',
-      email: decoded.email || email
-    };
-
-    setAuthState({
-      user: userData,
-      token,
-      loading: false
-    });
-
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", token);
-
-    toast.success("Login successful");
-    return { success: true, user: userData };
-  } catch (error) {
-    console.error("Login error:", error);
-    const message = error.response?.data?.message || error.message || "Authentication failed";
-    toast.error(message);
-    return { success: false, message };
-  }
-}, []);
+  }, []);
 
   // Logout handler
   const logout = useCallback(() => {
