@@ -107,9 +107,9 @@ export function AuthProvider({ children }) {
       toast.success("Login successful");
       return { success: true, user: userData };
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error(error.message || "Authentication failed");
-      return { success: false, message: error.message };
+      // console.error("Login error:", error);
+      // toast.error(error.message || "Authentication failed");
+      // return { success: false, message: error.message };
     }
   }, []);
 
