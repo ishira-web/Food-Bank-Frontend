@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
   // Login handler
   const login = useCallback(async (email, password) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_SECRET_URL}/api/account/login/me`, {
+      const response = await fetch(`${process.env.REACT_APP_SECRET_URL}api/account/login/me`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -107,9 +107,9 @@ export function AuthProvider({ children }) {
       toast.success("Login successful");
       return { success: true, user: userData };
     } catch (error) {
-      // console.error("Login error:", error);
-      // toast.error(error.message || "Authentication failed");
-      // return { success: false, message: error.message };
+      console.error("Login error:", error);
+      toast.error(error.message || "Authentication failed");
+      return { success: false, message: error.message };
     }
   }, []);
 
