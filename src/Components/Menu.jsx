@@ -5,16 +5,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import Cart from '../Components/Cart.jsx';
 
 function Menu() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    fetchMenuData();
-  }, []);
-
   const [quantities, setQuantities] = useState({});
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [menuData, setMenuData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchMenuData();
+  }, []);
+
 
   const fetchMenuData = async () => {
     try {
