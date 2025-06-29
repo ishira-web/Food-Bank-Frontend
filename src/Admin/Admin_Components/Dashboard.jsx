@@ -16,7 +16,7 @@ function Dashboard() {
   // Fetch food count
   const fetchFoodCount = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/food/getNumber');
+      const response = await axios.get('https://food-bank-backend-gqeu.onrender.com/api/food/getNumber');
       setFoodCount(response.data.foodCount || response.data.count || 0);
     } catch (err) {
       toast.error('Failed to load food count');
@@ -30,8 +30,8 @@ function Dashboard() {
       
       // Fetch data in parallel
       const [ordersResponse, revenueResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/order/all'),
-        axios.get('http://localhost:5000/api/order/revenue/total')
+        axios.get('https://food-bank-backend-gqeu.onrender.com/api/order/all'),
+        axios.get('https://food-bank-backend-gqeu.onrender.com/api/order/revenue/total')
       ]);
 
       const allOrders = ordersResponse.data.orders;

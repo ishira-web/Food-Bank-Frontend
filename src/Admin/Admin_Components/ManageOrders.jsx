@@ -35,7 +35,7 @@ function ManageOrders() {
   const fetchOrders = async () => {
     try {
       setRefreshing(true);
-      const response = await axios.get('http://localhost:5000/api/order/all');
+      const response = await axios.get('https://food-bank-backend-gqeu.onrender.com/api/order/all');
       setOrders(response.data.orders);
       
       // Calculate stats
@@ -77,7 +77,7 @@ function ManageOrders() {
       ));
       
       await axios.put(
-        `http://localhost:5000/api/order/update-status/${orderId}`,
+        `https://food-bank-backend-gqeu.onrender.com/api/order/update-status/${orderId}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );

@@ -33,7 +33,7 @@ function ManageUsers() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5000/api/account/allusers');
+      const response = await axios.get('https://food-bank-backend-gqeu.onrender.com/api/account/allusers');
       setUsers(response.data.data || []);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch users');
@@ -123,7 +123,7 @@ function ManageUsers() {
 
       if (currentUser) {
         // Update existing user
-        await axios.put(`http://localhost:5000/api/account/update/${currentUser._id}`, userData, {
+        await axios.put(`https://food-bank-backend-gqeu.onrender.com/api/account/update/${currentUser._id}`, userData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -132,7 +132,7 @@ function ManageUsers() {
         // Add new user (if needed)
         // Note: Typically you wouldn't add users this way in admin panel
         // Users usually register themselves
-        await axios.post('http://localhost:5000/api/account/register', userData, {
+        await axios.post('https://food-bank-backend-gqeu.onrender.com/api/account/register', userData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -153,7 +153,7 @@ function ManageUsers() {
   const deleteUser = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/account/delete/${id}`);
+        await axios.delete(`https://food-bank-backend-gqeu.onrender.com/api/account/delete/${id}`);
         // Refresh the users list
         await fetchUsers();
       } catch (err) {

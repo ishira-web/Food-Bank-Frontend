@@ -12,7 +12,7 @@ function Admin() {
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/account/count');
+        const response = await fetch('https://food-bank-backend-gqeu.onrender.com/api/account/count');
         if (!response.ok) {
           throw new Error('Failed to fetch user count');
         }
@@ -31,7 +31,7 @@ function Admin() {
   useEffect(() => {
     const fetchFoodCount = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/food/getNumber');
+        const response = await fetch('https://food-bank-backend-gqeu.onrender.com/api/food/getNumber');
         if (!response.ok) {
           throw new Error('Failed to fetch food count');
         }

@@ -38,7 +38,7 @@ function ManageReservation() {
         sort: filters.sort
       };
       
-      const response = await axios.get('http://localhost:5000/api/reservation/getall-reservations', { params });
+      const response = await axios.get('https://food-bank-backend-gqeu.onrender.com/api/reservation/getall-reservations', { params });
       
       setReservations(response.data.reservations);
       setPagination({
@@ -56,7 +56,7 @@ function ManageReservation() {
   const updateReservationStatus = async (id, newStatus) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/reservation/update-reservation/${id}`,
+        `https://food-bank-backend-gqeu.onrender.com/api/reservation/update-reservation/${id}`,
         { status: newStatus }
       );
       

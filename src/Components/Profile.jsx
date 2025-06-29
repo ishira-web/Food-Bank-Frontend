@@ -19,10 +19,10 @@ function Profile() {
     try {
       const token = localStorage.getItem('token');
       const [profileResponse, ordersResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/account/me', {
+        axios.get('https://food-bank-backend-gqeu.onrender.com/api/account/me', {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:5000/api/order/my-orders', {
+        axios.get('https://food-bank-backend-gqeu.onrender.com/api/order/my-orders', {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -73,7 +73,7 @@ function Profile() {
       }
 
       const response = await axios.put(
-        `http://localhost:5000/api/account/${userId}`,
+        `https://food-bank-backend-gqeu.onrender.com/api/account/${userId}`,
         formData,
         {
           headers: {

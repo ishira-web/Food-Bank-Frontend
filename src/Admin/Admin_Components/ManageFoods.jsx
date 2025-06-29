@@ -41,7 +41,7 @@ function ManageFoods() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5000/api/food/menu');
+      const response = await axios.get('https://food-bank-backend-gqeu.onrender.com/api/food/menu');
       if (response.data.success) {
         // Flatten the nested food structure
         const allFoods = response.data.data.flatMap(category => 
@@ -67,7 +67,7 @@ function ManageFoods() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/category/allCategory');
+      const response = await axios.get('https://food-bank-backend-gqeu.onrender.com/api/category/allCategory');
       if (response.data.success) {
         setCategories(response.data.data || []);
       } else {
@@ -179,7 +179,7 @@ const handleSubmit = async (e) => {
     if (currentFood) {
       // Update existing food
       response = await axios.put(
-        `http://localhost:5000/api/food/update/${currentFood._id}`,
+        `https://food-bank-backend-gqeu.onrender.com/api/food/update/${currentFood._id}`,
         foodData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
@@ -187,7 +187,7 @@ const handleSubmit = async (e) => {
     } else {
       // Add new food
       response = await axios.post(
-        'http://localhost:5000/api/food/createnew',
+        'https://food-bank-backend-gqeu.onrender.com/api/food/createnew',
         foodData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
@@ -208,7 +208,7 @@ const handleSubmit = async (e) => {
   const deleteFood = async (id) => {
     if (window.confirm('Are you sure you want to delete this food item?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/food/delete/${id}`);
+        await axios.delete(`https://food-bank-backend-gqeu.onrender.com/api/food/delete/${id}`);
         toast.success('Food item deleted successfully');
         await fetchFoods();
       } catch (err) {

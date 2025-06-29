@@ -85,7 +85,7 @@ function Payment() {
         }
         
         // Create payment intent on backend
-        const response = await fetch('http://localhost:5000/create-payment-intent', {
+        const response = await fetch('https://food-bank-backend-gqeu.onrender.com/create-payment-intent', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

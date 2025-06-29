@@ -39,7 +39,7 @@ function Register() {
     };
 
     // Send request to backend
-    const response = await fetch('http://localhost:5000/api/account/register', {
+    const response = await fetch('https://food-bank-backend-gqeu.onrender.com/api/account/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registrationData)

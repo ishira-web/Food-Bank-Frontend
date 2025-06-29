@@ -18,7 +18,7 @@ function Menu() {
 
   const fetchMenuData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/food/menu');
+      const response = await fetch('https://food-bank-backend-gqeu.onrender.com/api/food/menu');
       const data = await response.json();
       setMenuData(data.data);
       setLoading(false);

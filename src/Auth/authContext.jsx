@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
   // Login handler
   const login = useCallback(async (email, password) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_SECRET_URL}/api/account/login`, {
+      const response = await fetch(`https://food-bank-backend-gqeu.onrender.com/api/account/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

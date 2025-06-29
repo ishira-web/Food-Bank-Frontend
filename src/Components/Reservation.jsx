@@ -49,7 +49,7 @@ function Reservation() {
       }
       
       // Mock backend URL
-      const response = await fetch('http://localhost:5000/api/reservation/create-reservation', {
+      const response = await fetch('https://food-bank-backend-gqeu.onrender.com/api/reservation/create-reservation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

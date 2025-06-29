@@ -21,7 +21,7 @@ function ManageCategories() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5000/api/category/allCategory');
+      const response = await axios.get('https://food-bank-backend-gqeu.onrender.com/api/category/allCategory');
       setCategories(response.data.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch categories');
@@ -59,12 +59,12 @@ function ManageCategories() {
     try {
       if (currentCategory) {
         // Update existing category
-        await axios.put(`http://localhost:5000/api/category/update/${currentCategory._id}`, {
+        await axios.put(`https://food-bank-backend-gqeu.onrender.com/api/category/update/${currentCategory._id}`, {
           categoryName: categoryName.trim()
         });
       } else {
         // Add new category
-        await axios.post('http://localhost:5000/api/category/create', {
+        await axios.post('https://food-bank-backend-gqeu.onrender.com/api/category/create', {
           categoryName: categoryName.trim()
         });
       }
@@ -84,7 +84,7 @@ function ManageCategories() {
   const deleteCategory = async (id) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/category/delete/${id}`);
+        await axios.delete(`https://food-bank-backend-gqeu.onrender.com/api/category/delete/${id}`);
         // Refresh the categories list
         await fetchCategories();
       } catch (err) {
